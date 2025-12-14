@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calm Breath - Breathing Exercises</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-3px);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .exercise-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .exercise-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .exercise-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .exercise-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .breathing-circle-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 40px auto;
+        }
+
+        .breathing-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            box-shadow: 0 0 60px rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 4s ease-in-out;
+        }
+
+        .instruction-text {
+            font-size: 1.8em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .counter {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .controls {
+            margin-top: 30px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .info-box p {
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+    </style>
+</head>
+<body>
+            <div class="container">
+        <button class="back-btn" id="backBtn">← Back</button>
+        <h1>🌬️ Calm Breath</h1>
+        <p class="subtitle">Guided breathing exercises for peace and calm</p>
+
+        <div class="exercise-selector">
+            <button class="exercise-btn active" data-exercise="box">Box Breathing</button>
+            <button class="exercise-btn" data-exercise="478">4-7-8 Method</button>
+            <button class="exercise-btn" data-exercise="deep">Deep Breathing</button>
+        </div>
+
+        <div class="breathing-circle-container">
+            <div class="breathing-circle">
+                <div class="instruction-text">Press Start</div>
+            </div>
+        </div>
+
+        <div class="counter" id="counter"></div>
+
+        <div class="controls">
+            <button class="control-btn" id="startBtn">Start</button>
+            <button class="control-btn" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="info-box" id="infoBox">
+            <h3>Box Breathing</h3>
+            <p>Also called square breathing, this technique involves breathing in for 4 counts, holding for 4, exhaling for 4, and holding again for 4. It's excellent for reducing stress and improving focus.</p>
+        </div>
+    </div>
+
+    <script>
+        const exercises = {
+            box: {
+                name: 'Box Breathing',
+                description: 'Also called square breathing, this technique involves breathing in for 4 counts, holding for 4, exhaling for 4, and holding again for 4. It\'s excellent for reducing stress and improving focus.',
+                phases: [
+                    { instruction: 'Breathe In', duration: 4, scale: 1.5 },
+                    { instruction: 'Hold', duration: 4, scale: 1.5 },
+                    { instruction: 'Breathe Out', duration: 4, scale: 1 },
+                    { instruction: 'Hold', duration: 4, scale: 1 }
+                ]
+            },
+            '478': {
+                name: '4-7-8 Method',
+                description: 'Breathe in for 4 counts, hold for 7, and exhale for 8. This technique helps calm the nervous system and is particularly effective for sleep and anxiety relief.',
+                phases: [
+                    { instruction: 'Breathe In', duration: 4, scale: 1.5 },
+                    { instruction: 'Hold', duration: 7, scale: 1.5 },
+                    { instruction: 'Breathe Out', duration: 8, scale: 1 }
+                ]
+            },
+            deep: {
+                name: 'Deep Breathing',
+                description: 'Simple and effective - breathe in deeply for 5 counts and out for 5 counts. This helps activate your parasympathetic nervous system and promotes relaxation.',
+                phases: [
+                    { instruction: 'Breathe In', duration: 5, scale: 1.5 },
+                    { instruction: 'Breathe Out', duration: 5, scale: 1 }
+                ]
+            }
+        };
+
+        let currentExercise = 'box';
+        let isRunning = false;
+        let currentPhase = 0;
+        let countdown;
+        let phaseTimeout;
+
+        const circle = document.querySelector('.breathing-circle');
+        const instructionText = document.querySelector('.instruction-text');
+        const counter = document.getElementById('counter');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const infoBox = document.getElementById('infoBox');
+
+        document.querySelectorAll('.exercise-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.exercise-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentExercise = btn.dataset.exercise;
+                updateInfo();
+                reset();
+            });
+        });
+
+        function updateInfo() {
+            const exercise = exercises[currentExercise];
+            infoBox.innerHTML = `
+                <h3>${exercise.name}</h3>
+                <p>${exercise.description}</p>
+            `;
+        }
+
+        function runPhase() {
+            if (!isRunning) return;
+
+            const exercise = exercises[currentExercise];
+            const phase = exercise.phases[currentPhase];
+           
+            instructionText.textContent = phase.instruction;
+            circle.style.transform = `scale(${phase.scale})`;
+            circle.style.transition = `transform ${phase.duration}s ease-in-out`;
+
+            let timeLeft = phase.duration;
+            counter.textContent = timeLeft;
+
+            countdown = setInterval(() => {
+                timeLeft--;
+                counter.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                }
+            }, 1000);
+
+            phaseTimeout = setTimeout(() => {
+                currentPhase = (currentPhase + 1) % exercise.phases.length;
+                runPhase();
+            }, phase.duration * 1000);
+        }
+
+        function start() {
+            if (isRunning) return;
+            isRunning = true;
+            startBtn.textContent = 'Pause';
+            currentPhase = 0;
+            runPhase();
+        }
+
+        function pause() {
+            isRunning = false;
+            startBtn.textContent = 'Start';
+            clearInterval(countdown);
+            clearTimeout(phaseTimeout);
+        }
+
+        function reset() {
+            pause();
+            currentPhase = 0;
+            instructionText.textContent = 'Press Start';
+            counter.textContent = '';
+            circle.style.transform = 'scale(1)';
+            circle.style.transition = 'transform 0.3s ease';
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (isRunning) {
+                pause();
+            } else {
+                start();
+            }
+        });
+
+        resetBtn.addEventListener('click', reset);
+
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.history.back();
+        });
+
+        updateInfo();
+    </script>
+</body>
+</html>

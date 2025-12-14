@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Time Control Task Manager</title>
+    <style>
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Container */
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tab-btn {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 8px;
+    background: #f0f0f0;
+    color: #666;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.tab-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+/* Overview Stats */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+}
+
+.stat-box {
+    text-align: center;
+    color: white;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 14px;
+}
+
+/* Input Section */
+.input-section {
+    margin-bottom: 30px;
+}
+
+.task-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.task-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+}
+
+.priority-select,
+.time-input {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.time-input {
+    width: 120px;
+}
+
+.add-btn {
+    flex: 1;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: #5568d3;
+}
+
+/* Task List */
+.tasks-list {
+    min-height: 200px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    margin-bottom: 10px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+}
+
+.task-item.completed {
+    opacity: 0.6;
+    background: #f9f9f9;
+}
+
+/* Checkbox */
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checkbox.checked {
+    background: #10b981;
+    border-color: #10b981;
+    position: relative;
+}
+
+.checkbox.checked::after {
+    content: "✓";
+    color: white;
+    font-size: 16px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Task Content */
+.task-content {
+    flex: 1;
+}
+
+.task-text {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.task-text.completed {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.task-meta {
+    display: flex;
+    gap: 10px;
+}
+
+/* Priority Badges */
+.priority-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.priority-high {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.priority-medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.priority-low {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Time Badge */
+.time-badge {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Delete Button */
+.delete-btn {
+    padding: 8px 16px;
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    background: #fca5a5;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 18px;
+}
+
+/* Views */
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+}
+
+/* Stats View */
+.stats-card {
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.stats-big-number {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stats-box {
+    padding: 20px;
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+.stats-box-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #667eea;
+}
+
+/* Priority Breakdown */
+.priority-breakdown {
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.priority-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Time Control</h1>
+            <div class="tabs">
+                <button class="tab-btn active" id="tasksTab" onclick="switchTab('tasks')">Tasks</button>
+                <button class="tab-btn" id="statsTab" onclick="switchTab('stats')">Stats</button>
+            </div>
+        </div>
+
+        <div class="view-section active" id="tasksView">
+            <div class="stats-overview">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="completedTasks">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="remainingTime">0h 0m</div>
+                    <div class="stat-label">Remaining Time</div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <input type="text" class="task-input" id="taskInput" placeholder="What needs to be done?" />
+                <div class="input-row">
+                    <select class="priority-select" id="prioritySelect">
+                        <option value="high">High Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                    </select>
+                    <input type="number" class="time-input" id="timeInput" placeholder="Time (min)" value="30" />
+                    <button class="add-btn" onclick="addTask()">+ Add Task</button>
+                </div>
+            </div>
+
+            <div class="tasks-list" id="tasksList">
+                <div class="empty-state">No tasks yet. Add one to get started!</div>
+            </div>
+        </div>
+
+        <div class="view-section" id="statsView">
+            <h2 style="margin-bottom: 20px; font-size: 28px;">Statistics</h2>
+           
+            <div class="stats-card">
+                <div>Productivity Overview</div>
+                <div class="stats-big-number" id="completionRate">0%</div>
+                <div>Completion Rate</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stats-box">
+                    <div class="stats-box-number" id="completedTime">0h 0m</div>
+                    <div>Time Completed</div>
+                </div>
+                <div class="stats-box">
+                    <div class="stats-box-number" id="remainingTimeStats">0h 0m</div>
+                    <div>Time Remaining</div>
+                </div>
+            </div>
+
+            <div class="priority-breakdown">
+                <h3>Tasks by Priority</h3>
+                <div class="priority-item">
+                    <span class="priority-badge priority-high">High</span>
+                    <span id="highCount">0 tasks</span>
+                </div>
+                <div class="priority-item">
+                    <span class="priority-badge priority-medium">Medium</span>
+                    <span id="mediumCount">0 tasks</span>
+                </div>
+                <div class="priority-item">
+                    <span class="priority-badge priority-low">Low</span>
+                    <span id="lowCount">0 tasks</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        function addTask() {
+            const text = document.getElementById("taskInput").value.trim();
+            const priority = document.getElementById("prioritySelect").value;
+            const time = parseInt(document.getElementById("timeInput").value) || 30;
+
+            if (!text) return;
+
+            tasks.push({
+                id: Date.now(),
+                text,
+                priority,
+                estimatedTime: time,
+                completed: false
+            });
+
+            document.getElementById("taskInput").value = "";
+            document.getElementById("timeInput").value = "30";
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(task =>
+                task.id === id ? {...task, completed: !task.completed} : task
+            );
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById("tasksList");
+            if (!tasks.length) {
+                container.innerHTML = '<div class="empty-state">No tasks yet. Add one to get started!</div>';
+            } else {
+                container.innerHTML = tasks.map(task => `
+                <div class="task-item ${task.completed ? "completed" : ""}">
+                    <div class="checkbox ${task.completed ? "checked" : ""}" onclick="toggleTask(${task.id})"></div>
+                    <div class="task-content">
+                        <div class="task-text ${task.completed ? "completed" : ""}">${task.text}</div>
+                        <div class="task-meta">
+                            <span class="priority-badge priority-${task.priority}">${task.priority}</span>
+                            <span class="time-badge">⏱ ${task.estimatedTime} min</span>
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                </div>
+                `).join("");
+            }
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const remainingTime = tasks.filter(t => !t.completed).reduce((a,b) => a + b.estimatedTime, 0);
+            const completedTime = tasks.filter(t => t.completed).reduce((a,b) => a + b.estimatedTime, 0);
+
+            document.getElementById("totalTasks").textContent = total;
+            document.getElementById("completedTasks").textContent = completed;
+            document.getElementById("remainingTime").textContent = formatTime(remainingTime);
+
+            document.getElementById("completionRate").textContent = total ? Math.round((completed/total)*100) + "%" : "0%";
+            document.getElementById("completedTime").textContent = formatTime(completedTime);
+            document.getElementById("remainingTimeStats").textContent = formatTime(remainingTime);
+
+            document.getElementById("highCount").textContent = tasks.filter(t => !t.completed && t.priority==="high").length + " tasks";
+            document.getElementById("mediumCount").textContent = tasks.filter(t => !t.completed && t.priority==="medium").length + " tasks";
+            document.getElementById("lowCount").textContent = tasks.filter(t => !t.completed && t.priority==="low").length + " tasks";
+        }
+
+        function formatTime(min) {
+            return Math.floor(min/60) + "h " + (min%60) + "m";
+        }
+
+        function switchTab(view) {
+            document.getElementById("tasksView").classList.toggle("active", view === "tasks");
+            document.getElementById("statsView").classList.toggle("active", view === "stats");
+            document.getElementById("tasksTab").classList.toggle("active", view === "tasks");
+            document.getElementById("statsTab").classList.toggle("active", view === "stats");
+        }
+    </script>
+</body>
+</html>

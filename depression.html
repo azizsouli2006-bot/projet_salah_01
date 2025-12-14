@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindfulAI - Your Mental Health Companion</title>
+    <style>
+        :root {
+            --primary-color: #8B9FDE;
+            --secondary-color: #B4C6E7;
+            --accent-color: #A8D8EA;
+            --bg-light: #F7F9FC;
+            --bg-white: #FFFFFF;
+            --text-dark: #2C3E50;
+            --text-light: #5A6C7D;
+            --ai-bubble: #E8EEF7;
+            --user-bubble: #D4E6F1;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #E8EEF7, #F7F9FC);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(139, 159, 222, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(168, 216, 234, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            animation: float 15s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .robot-container {
+            margin-bottom: 2rem;
+            animation: robotBounce 2s infinite ease-in-out;
+        }
+
+        @keyframes robotBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .robot {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .robot-head {
+            width: 120px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 25px;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .robot-antenna {
+            width: 4px;
+            height: 20px;
+            background: var(--primary-color);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .robot-antenna::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+
+        .robot-eyes {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding-top: 30px;
+        }
+
+        .robot-eye {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            animation: eyeBlink 4s infinite;
+        }
+
+        @keyframes eyeBlink {
+            0%, 96%, 100% { transform: scaleY(1); }
+            98% { transform: scaleY(0.1); }
+        }
+
+        .robot-eye::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--text-dark);
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+
+        .robot-mouth {
+            width: 50px;
+            height: 25px;
+            border: 3px solid white;
+            border-top: none;
+            border-radius: 0 0 25px 25px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .robot-body {
+            width: 90px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border-radius: 0 0 15px 15px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-md);
+        }
+
+        h1 { 
+            font-size: 3rem; 
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p { 
+            color: var(--text-light); 
+            font-size: 1.3rem; 
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(139, 159, 222, 0.4);
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .chatbot-section { 
+            padding: 4rem 1rem; 
+            background: white;
+        }
+
+        .chat-window {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            height: 650px;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -50px;
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 2rem;
+            background: var(--bg-light);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(139, 159, 222, 0.3);
+            border-radius: 10px;
+        }
+
+        .message { 
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: messageSlide 0.4s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ai-message { 
+            justify-content: flex-start; 
+        }
+
+        .ai-message .avatar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .user-message { 
+            justify-content: flex-end;
+        }
+
+        .user-message .avatar {
+            background: linear-gradient(135deg, #A8D8EA, #B4C6E7);
+            order: 2;
+        }
+
+        .user-message .message-bubble {
+            order: 1;
+        }
+
+        .message-bubble { 
+            padding: 1rem 1.5rem; 
+            border-radius: 20px; 
+            max-width: 70%;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease;
+        }
+
+        .message-bubble:hover {
+            transform: translateY(-2px);
+        }
+
+        .ai-message .message-bubble { 
+            background: var(--ai-bubble); 
+            border-bottom-left-radius: 4px;
+        }
+
+        .user-message .message-bubble { 
+            background: var(--user-bubble); 
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            background: var(--ai-bubble);
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            border-bottom-left-radius: 4px;
+            display: inline-flex;
+            gap: 5px;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            margin-left: 52px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingDot {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .chat-input-area {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            border-top: 1px solid #ddd;
+            background: white;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: 30px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 159, 222, 0.1);
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 1rem 2.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-send::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-send:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-send:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 159, 222, 0.4);
+        }
+
+        .btn-send:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-send span {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+<section class="hero">
+    <div class="hero-content">
+        <div class="robot-container">
+            <div class="robot">
+                <div class="robot-head">
+                    <div class="robot-antenna"></div>
+                    <div class="robot-eyes">
+                        <div class="robot-eye"></div>
+                        <div class="robot-eye"></div>
+                    </div>
+                    <div class="robot-mouth"></div>
+                </div>
+                <div class="robot-body"></div>
+            </div>
+        </div>
+        <h1>You're Not Alone.</h1>
+        <p>A calm space to share how you're feeling.</p>
+        <a href="#chat" class="cta-button">
+            <span>Start Conversation ↓</span>
+        </a>
+    </div>
+</section>
+
+<section id="chat" class="chatbot-section">
+    <div class="chat-window">
+        <div class="chat-header">MindfulAI Companion 🤖</div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                <div class="avatar">🤖</div>
+                <div class="message-bubble">
+                    Hi there. I'm here for you. How are you feeling today?
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input id="messageInput" class="chat-input" placeholder="Type your message..." />
+            <button id="sendButton" class="btn-send">
+                <span>Send ✨</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<script>
+const chatMessages = document.getElementById("chatMessages");
+const messageInput = document.getElementById("messageInput");
+const sendButton = document.getElementById("sendButton");
+
+function addMessage(text, type) {
+    const div = document.createElement("div");
+    div.className = `message ${type}-message`;
+    
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = type === "ai" ? "🤖" : "👤";
+    
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble";
+    bubble.textContent = text;
+    
+    div.appendChild(avatar);
+    div.appendChild(bubble);
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTyping() {
+    const div = document.createElement("div");
+    div.id = "typing";
+    div.innerHTML = `
+        <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    `;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTyping() {
+    const t = document.getElementById("typing");
+    if (t) t.remove();
+}
+
+function getAIResponse(msg) {
+    msg = msg.toLowerCase();
+
+    if (msg === "hi" || msg === "hello" || msg === "hey" || msg.includes("hi ") || msg.includes("hello") || msg.includes("hey")) {
+        return "Hi 😊 I'm really glad you reached out. How are you feeling right now?";
+    }
+
+    if (msg.includes("sad") || msg.includes("depressed")) {
+        return "I'm really sorry you're feeling this way. You're not alone, and it's okay to feel sad sometimes. Do you want to talk about what's been going on?";
+    }
+
+    if (msg.includes("overwhelmed") || msg.includes("stressed") || msg.includes("pressure")) {
+        return "That sounds really heavy. Feeling overwhelmed or under pressure can be exhausting. What's been causing this stress for you?";
+    }
+
+    // Advice responses
+    if (msg.includes("advice") || msg.includes("advices")) {
+        const advices = [
+            "💙 Take a few deep breaths right now. Breathe in for 4 counts, hold for 4, and exhale for 6. This activates your calming response and helps reduce anxiety.",
+            "🌟 Start your day with gratitude. Write down 3 things you're grateful for each morning. This simple practice can shift your mindset and improve your overall mood.",
+            "🚶‍♂️ Movement is medicine. Even a 10-minute walk outside can boost your mood and clear your mind. You don't need to run a marathon—just move your body gently.",
+            "📱 Limit social media time. Set boundaries with your screen time, especially before bed. Your mental health will thank you for the digital detox.",
+            "💬 Talk to someone you trust. Sharing your feelings with a friend, family member, or therapist can lighten your emotional load. You don't have to carry everything alone.",
+            "🛌 Prioritize sleep. Aim for 7-9 hours each night. Good sleep is foundational for mental health—it helps regulate emotions and improves resilience.",
+            "📝 Journal your thoughts. Writing down what you're feeling can help you process emotions and gain clarity. It doesn't have to be perfect, just honest.",
+            "🎨 Do something creative. Whether it's drawing, music, cooking, or crafting, creative activities can be therapeutic and help you express emotions in new ways.",
+            "🧘‍♀️ Try mindfulness meditation. Even 5 minutes a day can reduce stress and increase self-awareness. Apps like Headspace or Calm can guide you if you're new to it.",
+            "🌱 Set small, achievable goals. Break big tasks into tiny steps. Accomplishing small things builds momentum and boosts your confidence.",
+            "☕ Limit caffeine and alcohol. Both can affect your mood and sleep. Try herbal tea or water instead, and notice how your body responds.",
+            "🤗 Practice self-compassion. Talk to yourself like you would a good friend. Be kind, patient, and understanding with yourself—you deserve that love too.",
+            "🌞 Get sunlight exposure. Natural light helps regulate your circadian rhythm and boosts serotonin. Try to spend at least 15 minutes outside each day.",
+            "🎵 Listen to music that uplifts you. Music has a powerful effect on mood. Create a playlist of songs that make you feel good and listen when you need a boost.",
+            "🍎 Nourish your body well. What you eat affects how you feel. Focus on whole foods, fruits, vegetables, and stay hydrated throughout the day."
+        ];
+        
+        return advices[Math.floor(Math.random() * advices.length)];
+    }
+
+    const fallback = [
+        "I'm here with you. Tell me more when you're ready.",
+        "Thank you for sharing that with me. How does it make you feel?",
+        "You're doing the best you can, and that matters.",
+        "I'm listening — take your time."
+    ];
+
+    return fallback[Math.floor(Math.random() * fallback.length)];
+}
+
+async function handleSend() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    messageInput.value = "";
+
+    showTyping();
+    await new Promise(r => setTimeout(r, 1200));
+    hideTyping();
+
+    addMessage(getAIResponse(text), "ai");
+}
+
+sendButton.onclick = handleSend;
+messageInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") handleSend();
+});
+
+// Smooth scroll to chat
+document.querySelector('.cta-button').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector('#chat').scrollIntoView({
+        behavior: 'smooth'
+    });
+});
+</script>
+
+</body>
+</html>

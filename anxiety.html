@@ -1,0 +1,727 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calm Mind Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            text-align: center;
+            max-width: 600px;
+            animation: fadeIn 1s ease-in 0.3s backwards;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: white;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideUp 0.6s ease-out backwards;
+        }
+
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
+        .game-card:nth-child(7) { animation-delay: 0.7s; }
+        .game-card:nth-child(8) { animation-delay: 0.8s; }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+
+        .game-card h2 {
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .game-card p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        /* Stress Ball */
+        .stress-ball {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #ee5a6f, #c44569);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(196, 69, 105, 0.5);
+            cursor: pointer;
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+
+        .stress-ball:active {
+            transform: scale(0.7);
+            box-shadow: 0 5px 15px rgba(196, 69, 105, 0.7);
+        }
+
+        /* Pop Bubbles */
+        .bubbles-container {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(100, 150, 255, 0.4));
+            cursor: pointer;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .bubble:hover {
+            transform: scale(1.1);
+        }
+
+        /* Pattern Drawing */
+        #drawCanvas {
+            background: white;
+            border-radius: 10px;
+            cursor: crosshair;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: block;
+            margin: 20px auto;
+        }
+
+        /* Memory Match */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .memory-card.matched {
+            background: rgba(76, 175, 80, 0.8);
+            cursor: default;
+        }
+
+        /* Whack-a-Mole */
+        .mole-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .mole-hole {
+            aspect-ratio: 1;
+            background: rgba(139, 69, 19, 0.5);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .mole {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, #8B4513, #654321);
+            border-radius: 50%;
+            bottom: -100%;
+            left: 10%;
+            cursor: pointer;
+            transition: bottom 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+
+        .mole.up {
+            bottom: 10%;
+        }
+
+        /* Connect Dots */
+        #dotsCanvas {
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: block;
+            margin: 20px auto;
+        }
+
+        /* Mandala Coloring */
+        .mandala-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 20px auto;
+        }
+
+        .mandala-svg {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .mandala-svg path {
+            transition: fill 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="history.back()">
+        <span>←</span>
+        <span>Back</span>
+    </button>
+   
+    <h1>🧘 Calm Mind Games 🧘</h1>
+    <p class="subtitle">Relax and unwind with these interactive games designed to reduce stress and anxiety</p>
+   
+    <div class="games-container">
+        <!-- Stress Ball -->
+        <div class="game-card">
+            <h2>🎯 Stress Ball Squeeze</h2>
+            <p>Click and hold the ball to squeeze it and release tension.</p>
+            <div class="stress-ball" id="stressBall">Click & Hold</div>
+        </div>
+
+        <!-- Pop Bubbles -->
+        <div class="game-card">
+            <h2>🫧 Pop the Bubbles</h2>
+            <p>Click bubbles to pop them and release stress.</p>
+            <div class="bubbles-container" id="bubblesContainer"></div>
+            <div class="score">Popped: <span id="bubbleScore">0</span></div>
+        </div>
+
+        <!-- Pattern Drawing -->
+        <div class="game-card">
+            <h2>✏️ Zen Drawing</h2>
+            <p>Draw patterns to calm your mind.</p>
+            <canvas id="drawCanvas" width="280" height="200"></canvas>
+            <div class="controls">
+                <button id="clearCanvas">Clear</button>
+                <button id="changeColor">Change Color</button>
+            </div>
+        </div>
+
+        <!-- Memory Match -->
+        <div class="game-card">
+            <h2>🧩 Memory Match</h2>
+            <p>Find matching pairs to improve focus.</p>
+            <div class="memory-grid" id="memoryGrid"></div>
+            <div class="controls">
+                <button id="resetMemory">New Game</button>
+            </div>
+            <div class="score">Matches: <span id="memoryScore">0/8</span></div>
+        </div>
+
+        <!-- Whack-a-Stress -->
+        <div class="game-card">
+            <h2>🔨 Whack-a-Stress</h2>
+            <p>Tap the stress balls when they pop up!</p>
+            <div class="mole-grid" id="moleGrid"></div>
+            <div class="controls">
+                <button id="startMole">Start Game</button>
+            </div>
+            <div class="score">Score: <span id="moleScore">0</span></div>
+        </div>
+
+        <!-- Connect the Dots -->
+        <div class="game-card">
+            <h2>⭐ Connect the Stars</h2>
+            <p>Click dots in order to create constellations.</p>
+            <canvas id="dotsCanvas" width="280" height="250"></canvas>
+            <div class="controls">
+                <button id="newDots">New Pattern</button>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // Stress Ball
+        const stressBall = document.getElementById('stressBall');
+        let squeezeCount = 0;
+
+        stressBall.addEventListener('mousedown', () => {
+            stressBall.textContent = '💪 Squeeze!';
+            squeezeCount++;
+        });
+
+        stressBall.addEventListener('mouseup', () => {
+            stressBall.textContent = `Squeezed ${squeezeCount}x`;
+            setTimeout(() => {
+                stressBall.textContent = 'Click & Hold';
+            }, 1000);
+        });
+
+        stressBall.addEventListener('mouseleave', () => {
+            stressBall.textContent = 'Click & Hold';
+        });
+
+        stressBall.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            stressBall.textContent = '💪 Squeeze!';
+            squeezeCount++;
+        });
+
+        stressBall.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            stressBall.textContent = `Squeezed ${squeezeCount}x`;
+            setTimeout(() => {
+                stressBall.textContent = 'Click & Hold';
+            }, 1000);
+        });
+
+        // Bubble Popping Game (FIXED)
+        const bubblesContainer = document.getElementById('bubblesContainer');
+        const bubbleScore = document.getElementById('bubbleScore');
+        let score = 0;
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffa07a', '#98d8c8', '#f7dc6f'];
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 60 + 40;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * (bubblesContainer.offsetWidth - size) + 'px';
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), ${color})`;
+           
+            // Start from bottom
+            bubble.style.bottom = '-60px';
+           
+            bubble.addEventListener('click', () => {
+                bubble.style.animation = 'pop 0.3s ease-out';
+                setTimeout(() => bubble.remove(), 300);
+                score++;
+                bubbleScore.textContent = score;
+            });
+
+            bubblesContainer.appendChild(bubble);
+           
+            // Animate upward
+            let position = -60;
+            const speed = Math.random() * 1.5 + 1;
+            const floatAnimation = setInterval(() => {
+                position += speed;
+                bubble.style.bottom = position + 'px';
+               
+                // Add horizontal wobble
+                const wobble = Math.sin(position / 20) * 10;
+                const left = parseFloat(bubble.style.left);
+                bubble.style.left = (left + wobble * 0.1) + 'px';
+               
+                if (position > bubblesContainer.offsetHeight) {
+                    clearInterval(floatAnimation);
+                    if (bubble.parentElement) bubble.remove();
+                }
+            }, 30);
+        }
+
+        setInterval(createBubble, 1200);
+
+        // Zen Drawing
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        const clearBtn = document.getElementById('clearCanvas');
+        const colorBtn = document.getElementById('changeColor');
+       
+        let drawing = false;
+        let currentColor = '#667eea';
+        const drawColors = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b', '#fa709a'];
+        let colorIndex = 0;
+
+        canvas.addEventListener('mousedown', (e) => {
+            drawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        });
+
+        canvas.addEventListener('mouseup', () => drawing = false);
+        canvas.addEventListener('mouseleave', () => drawing = false);
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = currentColor;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        colorBtn.addEventListener('click', () => {
+            colorIndex = (colorIndex + 1) % drawColors.length;
+            currentColor = drawColors[colorIndex];
+            colorBtn.style.background = currentColor;
+            colorBtn.style.color = 'white';
+        });
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            drawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = currentColor;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        });
+
+        canvas.addEventListener('touchend', () => drawing = false);
+
+        // Memory Match Game
+        const memoryGrid = document.getElementById('memoryGrid');
+        const memoryScore = document.getElementById('memoryScore');
+        const resetMemory = document.getElementById('resetMemory');
+        const emojis = ['🌸', '🌺', '🌻', '🌷', '🌹', '🏵️', '🌼', '💐'];
+        let memoryCards = [];
+        let flippedCards = [];
+        let matches = 0;
+
+        function initMemory() {
+            memoryGrid.innerHTML = '';
+            memoryCards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+            flippedCards = [];
+            matches = 0;
+            memoryScore.textContent = '0/8';
+
+            memoryCards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.textContent = '?';
+                card.addEventListener('click', flipCard);
+                memoryGrid.appendChild(card);
+            });
+        }
+
+        function flipCard() {
+            if (flippedCards.length >= 2 || this.classList.contains('flipped') || this.classList.contains('matched')) return;
+           
+            this.classList.add('flipped');
+            this.textContent = this.dataset.emoji;
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 600);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matches++;
+                memoryScore.textContent = `${matches}/8`;
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '?';
+                card2.textContent = '?';
+            }
+            flippedCards = [];
+        }
+
+        resetMemory.addEventListener('click', initMemory);
+        initMemory();
+
+        // Whack-a-Stress
+        const moleGrid = document.getElementById('moleGrid');
+        const moleScore = document.getElementById('moleScore');
+        const startMole = document.getElementById('startMole');
+        let moleGameActive = false;
+        let molePoints = 0;
+        let moleInterval;
+
+        for (let i = 0; i < 9; i++) {
+            const hole = document.createElement('div');
+            hole.className = 'mole-hole';
+            const mole = document.createElement('div');
+            mole.className = 'mole';
+            mole.textContent = '😰';
+            mole.addEventListener('click', () => {
+                if (mole.classList.contains('up')) {
+                    mole.classList.remove('up');
+                    molePoints++;
+                    moleScore.textContent = molePoints;
+                    mole.textContent = '😌';
+                    setTimeout(() => mole.textContent = '😰', 200);
+                }
+            });
+            hole.appendChild(mole);
+            moleGrid.appendChild(hole);
+        }
+
+        startMole.addEventListener('click', () => {
+            if (moleGameActive) {
+                clearInterval(moleInterval);
+                document.querySelectorAll('.mole').forEach(m => m.classList.remove('up'));
+                startMole.textContent = 'Start Game';
+                moleGameActive = false;
+            } else {
+                molePoints = 0;
+                moleScore.textContent = '0';
+                startMole.textContent = 'Stop Game';
+                moleGameActive = true;
+                popUpMole();
+                moleInterval = setInterval(popUpMole, 1000);
+            }
+        });
+
+        function popUpMole() {
+            document.querySelectorAll('.mole').forEach(m => m.classList.remove('up'));
+            const moles = document.querySelectorAll('.mole');
+            const randomMole = moles[Math.floor(Math.random() * moles.length)];
+            randomMole.classList.add('up');
+            setTimeout(() => randomMole.classList.remove('up'), 800);
+        }
+
+        // Connect the Stars
+        const dotsCanvas = document.getElementById('dotsCanvas');
+        const dotsCtx = dotsCanvas.getContext('2d');
+        const newDots = document.getElementById('newDots');
+        let dots = [];
+        let connectedDots = [];
+
+        function generateDots() {
+            dots = [];
+            connectedDots = [];
+            dotsCtx.clearRect(0, 0, dotsCanvas.width, dotsCanvas.height);
+           
+            for (let i = 0; i < 8; i++) {
+                dots.push({
+                    x: Math.random() * (dotsCanvas.width - 40) + 20,
+                    y: Math.random() * (dotsCanvas.height - 40) + 20,
+                    number: i + 1
+                });
+            }
+            drawDots();
+        }
+
+        function drawDots() {
+            dotsCtx.clearRect(0, 0, dotsCanvas.width, dotsCanvas.height);
+           
+            // Draw connections
+            dotsCtx.strokeStyle = '#667eea';
+            dotsCtx.lineWidth = 2;
+            for (let i = 1; i < connectedDots.length; i++) {
+                dotsCtx.beginPath();
+                dotsCtx.moveTo(connectedDots[i - 1].x, connectedDots[i - 1].y);
+                dotsCtx.lineTo(connectedDots[i].x, connectedDots[i].y);
+                dotsCtx.stroke();
+            }
+           
+            // Draw dots
+            dots.forEach((dot, i) => {
+                dotsCtx.fillStyle = connectedDots.includes(dot) ? '#43e97b' : '#667eea';
+                dotsCtx.beginPath();
+                dotsCtx.arc(dot.x, dot.y, 15, 0, Math.PI * 2);
+                dotsCtx.fill();
+               
+                dotsCtx.fillStyle = 'white';
+                dotsCtx.font = 'bold 14px Arial';
+                dotsCtx.textAlign = 'center';
+                dotsCtx.textBaseline = 'middle';
+                dotsCtx.fillText(dot.number, dot.x, dot.y);
+            });
+        }
+
+        dotsCanvas.addEventListener('click', (e) => {
+            const rect = dotsCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+           
+            dots.forEach(dot => {
+                const dist = Math.sqrt((x - dot.x) ** 2 + (y - dot.y) ** 2);
+                if (dist < 15 && dot.number === connectedDots.length + 1) {
+                    connectedDots.push(dot);
+                    drawDots();
+                }
+            });
+        });
+
+        newDots.addEventListener('click', generateDots);
+        generateDots();
+    </script>
+</body>
+</html>

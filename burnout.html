@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burnout Prevention - Early Warning System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 1.3em;
+        }
+
+        .stress-meter {
+            margin: 20px 0;
+        }
+
+        .meter-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #fbbf24, #ef4444);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .symptoms-list {
+            list-style: none;
+        }
+
+        .symptom-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .symptom-item:hover {
+            background: #e5e7eb;
+        }
+
+        .symptom-item.selected {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .checkbox.checked {
+            background: #667eea;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .recommendations {
+            margin-top: 15px;
+        }
+
+        .recommendation-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f0fdf4;
+            border-left: 3px solid #10b981;
+            border-radius: 5px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .back-button {
+                position: static;
+                margin: 0 auto 20px auto;
+            }
+            header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button class="back-button" onclick="window.history.back()">
+                <span>←</span> Back
+            </button>
+            <h1>🛡️ Burnout Prevention</h1>
+            <p class="tagline">Early Detection & Proactive Wellness</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="card">
+                <h2><span class="icon">📊</span> Stress Level Monitor</h2>
+                <div class="stress-meter">
+                    <div class="meter-bar">
+                        <div class="meter-fill" id="stressMeter" style="width: 0%">
+                            <span id="stressPercent">0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="stressAlert" class="alert"></div>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="checkCount">0</div>
+                        <div class="stat-label">Check-ins</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="avgStress">0%</div>
+                        <div class="stat-label">Avg Stress</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="daysTracked">1</div>
+                        <div class="stat-label">Days</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">⚠️</span> Warning Signs</h2>
+                <p style="color: #6b7280; margin-bottom: 15px;">Select any symptoms you're experiencing:</p>
+                <ul class="symptoms-list" id="symptomsList">
+                    <li class="symptom-item" data-symptom="fatigue">
+                        <div class="checkbox"></div>
+                        <span>Constant fatigue or exhaustion</span>
+                    </li>
+                    <li class="symptom-item" data-symptom="sleep">
+                        <div class="checkbox"></div>
+                        <span>Sleep problems (insomnia/oversleeping)</span>
+                    </li>
+                    <li class="symptom-item" data-symptom="concentration">
+                        <div class="checkbox"></div>
+                        <span>Difficulty concentrating</span>
+                    </li>
+                    <li class="symptom-item" data-symptom="mood">
+                        <div class="checkbox"></div>
+                        <span>Mood swings or irritability</span>
+                    </li>
+                    <li class="symptom-item" data-symptom="headaches">
+                        <div class="checkbox"></div>
+                        <span>Frequent headaches</span>
+                    </li>
+                    <li class="symptom-item" data-symptom="appetite">
+                        <div class="checkbox"></div>
+                        <span>Changes in appetite</span>
+                    </li>
+                    <li class="symptom-item" data-symptom="motivation">
+                        <div class="checkbox"></div>
+                        <span>Loss of motivation</span>
+                    </li>
+                    <li class="symptom-item" data-symptom="withdrawal">
+                        <div class="checkbox"></div>
+                        <span>Social withdrawal</span>
+                    </li>
+                </ul>
+                <button class="btn btn-primary" id="analyzeBtn">
+                    <span>🔍</span> Analyze My Symptoms
+                </button>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">💡</span> Recommendations</h2>
+                <div id="recommendationsContainer" class="recommendations">
+                    <p style="color: #6b7280;">Select your symptoms to get personalized recommendations.</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        let selectedSymptoms = new Set();
+        let stressHistory = [];
+        let checkCount = 0;
+
+        // Symptom selection
+        document.querySelectorAll('.symptom-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const symptom = this.dataset.symptom;
+                const checkbox = this.querySelector('.checkbox');
+               
+                if (selectedSymptoms.has(symptom)) {
+                    selectedSymptoms.delete(symptom);
+                    this.classList.remove('selected');
+                    checkbox.classList.remove('checked');
+                    checkbox.textContent = '';
+                } else {
+                    selectedSymptoms.add(symptom);
+                    this.classList.add('selected');
+                    checkbox.classList.add('checked');
+                    checkbox.textContent = '✓';
+                }
+               
+                updateStressLevel();
+            });
+        });
+
+        // Update stress level based on symptoms
+        function updateStressLevel() {
+            const symptomCount = selectedSymptoms.size;
+            const stressPercent = Math.min((symptomCount / 8) * 100, 100);
+           
+            const meterFill = document.getElementById('stressMeter');
+            const stressPercentText = document.getElementById('stressPercent');
+            const stressAlert = document.getElementById('stressAlert');
+           
+            meterFill.style.width = stressPercent + '%';
+            stressPercentText.textContent = Math.round(stressPercent) + '%';
+           
+            stressAlert.className = 'alert';
+           
+            if (stressPercent >= 75) {
+                stressAlert.className = 'alert alert-danger show';
+                stressAlert.textContent = '🚨 High stress detected! Immediate action recommended.';
+            } else if (stressPercent >= 50) {
+                stressAlert.className = 'alert alert-warning show';
+                stressAlert.textContent = '⚠️ Moderate stress levels. Consider taking preventive measures.';
+            } else if (stressPercent > 0) {
+                stressAlert.className = 'alert alert-info show';
+                stressAlert.textContent = '✓ Mild symptoms detected. Stay mindful of your wellbeing.';
+            }
+        }
+
+        // Analyze symptoms and provide recommendations
+        document.getElementById('analyzeBtn').addEventListener('click', function() {
+            checkCount++;
+            document.getElementById('checkCount').textContent = checkCount;
+           
+            const symptomCount = selectedSymptoms.size;
+            const stressPercent = Math.min((symptomCount / 8) * 100, 100);
+           
+            stressHistory.push(stressPercent);
+            const avgStress = stressHistory.reduce((a, b) => a + b, 0) / stressHistory.length;
+            document.getElementById('avgStress').textContent = Math.round(avgStress) + '%';
+           
+            const container = document.getElementById('recommendationsContainer');
+            container.innerHTML = '<h3 style="color: #667eea; margin-bottom: 15px;">Your Personalized Action Plan:</h3>';
+           
+            const recommendations = [];
+           
+            if (selectedSymptoms.has('fatigue')) {
+                recommendations.push('Take regular breaks every 90 minutes');
+                recommendations.push('Ensure 7-9 hours of quality sleep');
+            }
+           
+            if (selectedSymptoms.has('sleep')) {
+                recommendations.push('Establish a consistent sleep schedule');
+                recommendations.push('Avoid screens 1 hour before bedtime');
+            }
+           
+            if (selectedSymptoms.has('concentration')) {
+                recommendations.push('Practice the Pomodoro technique (25min work/5min break)');
+                recommendations.push('Minimize multitasking');
+            }
+           
+            if (selectedSymptoms.has('mood') || selectedSymptoms.has('withdrawal')) {
+                recommendations.push('Connect with friends or family daily');
+                recommendations.push('Practice mindfulness or meditation');
+            }
+           
+            if (selectedSymptoms.has('headaches')) {
+                recommendations.push('Stay hydrated (8 glasses of water daily)');
+                recommendations.push('Take screen breaks every 20 minutes');
+            }
+           
+            if (selectedSymptoms.has('appetite')) {
+                recommendations.push('Eat regular, balanced meals');
+                recommendations.push('Avoid excessive caffeine');
+            }
+           
+            if (selectedSymptoms.has('motivation')) {
+                recommendations.push('Set small, achievable daily goals');
+                recommendations.push('Celebrate small wins');
+            }
+           
+            if (recommendations.length === 0) {
+                recommendations.push('Continue monitoring your wellbeing daily');
+                recommendations.push('Maintain healthy work-life boundaries');
+                recommendations.push('Practice self-care regularly');
+            }
+           
+            if (symptomCount >= 6) {
+                recommendations.unshift('🚨 URGENT: Consider speaking with a mental health professional');
+                recommendations.unshift('Take immediate time off if possible');
+            }
+           
+            recommendations.forEach(rec => {
+                const div = document.createElement('div');
+                div.className = 'recommendation-item';
+                div.textContent = '• ' + rec;
+                container.appendChild(div);
+            });
+        });
+
+
+    </script>
+</body>
+</html>

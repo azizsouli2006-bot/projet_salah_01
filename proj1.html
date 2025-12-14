@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Login/Signup Ultimate</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+
+/* ----------------- Body & Animated Background ----------------- */
+body {
+    margin:0;
+    font-family:'Inter', sans-serif;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(-45deg, #6a85b6, #bac8e0, #faaca8, #f8cdda);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    position: relative;
+}
+
+@keyframes gradientBG {
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* ----------------- Particles & Lines ----------------- */
+.particles, .lines {
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    overflow:hidden;
+    z-index:0;
+}
+
+.particle {
+    position:absolute;
+    width:10px; height:10px;
+    background: rgba(255,255,255,0.7);
+    border-radius:50%;
+    animation: float 10s linear infinite;
+}
+
+@keyframes float{
+    0%{transform: translateY(0) translateX(0);}
+    50%{transform: translateY(-50px) translateX(30px);}
+    100%{transform: translateY(-100vh) translateX(-50px);}
+}
+
+.line{
+    position:absolute;
+    width:2px;
+    height:100px;
+    background: rgba(255,255,255,0.1);
+    animation: moveLine 12s linear infinite;
+}
+
+@keyframes moveLine{
+    0%{transform: translateY(100vh);}
+    100%{transform: translateY(-100vh);}
+}
+
+/* ----------------- Auth Box ----------------- */
+.auth-box{
+    position:relative;
+    z-index:1;
+    width:400px;
+    background: rgba(255,255,255,0.95);
+    padding:50px 40px;
+    border-radius:25px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    text-align:center;
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+}
+
+.auth-box:hover{
+    transform: translateY(-5px);
+    box-shadow:0 30px 70px rgba(0,0,0,0.4);
+}
+
+.auth-box h2{
+    font-size:30px;
+    font-weight:600;
+    margin-bottom:30px;
+    background: linear-gradient(90deg,#6a85b6,#bac8e0);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    opacity:0;
+    transform: translateY(-20px);
+    animation: fadeInText 1s forwards;
+}
+
+@keyframes fadeInText{
+    to{opacity:1; transform:translateY(0);}
+}
+
+/* ----------------- Inputs with Floating Labels ----------------- */
+.input-group{
+    position:relative;
+    margin:20px 0;
+    text-align:left;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px 18px;
+    border-radius:12px;
+    border:1px solid #ccc;
+    font-size:15px;
+    transition:0.3s;
+    background:transparent;
+}
+
+.input-group input:focus{
+    border-color:#6a85b6;
+    box-shadow:0 0 10px rgba(106,133,182,0.5);
+    outline:none;
+}
+
+.input-group label{
+    position:absolute;
+    top:50%;
+    left:18px;
+    transform: translateY(-50%);
+    color:#aaa;
+    pointer-events:none;
+    transition:0.3s;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label{
+    top:-10px;
+    left:12px;
+    font-size:12px;
+    color:#6a85b6;
+    font-weight:600;
+}
+
+/* ----------------- Buttons ----------------- */
+.auth-box button{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#6a85b6,#bac8e0);
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:20px;
+    position:relative;
+    overflow:hidden;
+    transition:0.3s;
+}
+
+.auth-box button::after{
+    content:"";
+    position:absolute;
+    width:300%;
+    height:300%;
+    top:-100%;
+    left:-100%;
+    background:rgba(255,255,255,0.2);
+    transform: rotate(45deg);
+    transition:all 0.5s ease;
+}
+
+.auth-box button:hover::after{
+    top:0; left:0;
+}
+
+.auth-box button:hover{
+    transform:scale(1.05);
+    box-shadow:0 15px 25px rgba(0,0,0,0.3);
+}
+
+/* ----------------- Toggle Text ----------------- */
+.auth-box p{
+    margin-top:25px;
+    color:#6a85b6;
+    font-size:14px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.auth-box p:hover{
+    color:#374b75;
+    text-decoration:underline;
+}
+
+/* ----------------- Confirm Password Animation ----------------- */
+#confirmPassword{
+    opacity:0;
+    max-height:0;
+    transition:opacity 0.5s, max-height 0.5s;
+}
+#confirmPassword.show{
+    opacity:1;
+    max-height:60px;
+}
+
+/* ----------------- Error Shake ----------------- */
+.shake{
+    animation:shake 0.5s;
+}
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-8px);}
+    50%{transform:translateX(8px);}
+    75%{transform:translateX(-8px);}
+    100%{transform:translateX(0);}
+}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+<div class="lines" id="lines"></div>
+
+<div class="auth-box" id="authBox">
+    <h2 id="title">Login</h2>
+
+    <div class="input-group">
+        <input type="text" id="username" placeholder=" " autocomplete="off">
+        <label>Username</label>
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="password" placeholder=" " autocomplete="off">
+        <label>Password</label>
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="confirmPassword" placeholder=" " autocomplete="off">
+        <label>Confirm Password</label>
+    </div>
+
+    <button onclick="auth()" id="authBtn">Login</button>
+    <p onclick="toggle()" id="toggleText">Create account</p>
+</div>
+
+<script>
+/* ----------------- IndexedDB ----------------- */
+let isLogin = true;
+let db;
+const request = indexedDB.open("UserDatabaseProV2",1);
+
+request.onupgradeneeded = function(e){
+    db=e.target.result;
+    db.createObjectStore("users",{keyPath:"username"});
+}
+
+request.onsuccess = function(e){db=e.target.result;}
+
+/* ----------------- Toggle ----------------- */
+function toggle(){
+    isLogin = !isLogin;
+    document.getElementById("title").innerText = isLogin?"Login":"Sign Up";
+    document.getElementById("authBtn").innerText = isLogin?"Login":"Sign Up";
+    document.getElementById("toggleText").innerText = isLogin?"Create account":"Already have an account?";
+    const confirm=document.getElementById("confirmPassword");
+    if(!isLogin) confirm.classList.add("show");
+    else confirm.classList.remove("show");
+}
+
+/* ----------------- Auth ----------------- */
+function auth(){
+    const username=document.getElementById("username").value.trim();
+    const password=document.getElementById("password").value.trim();
+    const confirmPassword=document.getElementById("confirmPassword").value.trim();
+    const box=document.getElementById("authBox");
+
+    if(!username||!password||(!isLogin&&!confirmPassword)){
+        alert("Fill all fields!");
+        box.classList.add("shake");
+        setTimeout(()=>box.classList.remove("shake"),500);
+        return;
+    }
+
+    const tx=db.transaction("users","readwrite");
+    const store=tx.objectStore("users");
+
+    if(isLogin){
+        const getUser=store.get(username);
+        getUser.onsuccess=()=>{
+            if(getUser.result && getUser.result.password===password){
+                window.location.href="pro1.html";
+            }else{
+                alert("Wrong username or password!");
+                box.classList.add("shake");
+                setTimeout(()=>box.classList.remove("shake"),500);
+            }
+        }
+    }else{
+        if(password!==confirmPassword){
+            alert("Passwords do not match!");
+            box.classList.add("shake");
+            setTimeout(()=>box.classList.remove("shake"),500);
+            return;
+        }
+        const addUser=store.add({username,password});
+        addUser.onsuccess=()=>{
+            alert("Account created successfully!");
+            toggle();
+        };
+        addUser.onerror=()=>{
+            alert("Username already exists!");
+            box.classList.add("shake");
+            setTimeout(()=>box.classList.remove("shake"),500);
+        }
+    }
+}
+
+/* ----------------- Particles & Lines ----------------- */
+const particlesContainer=document.getElementById("particles");
+for(let i=0;i<40;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+    p.style.left=Math.random()*100+"%";
+    p.style.top=Math.random()*100+"%";
+    p.style.width=p.style.height=Math.random()*12+4+"px";
+    p.style.animationDuration=5+Math.random()*10+"s";
+    particlesContainer.appendChild(p);
+}
+
+const linesContainer=document.getElementById("lines");
+for(let i=0;i<20;i++){
+    const l=document.createElement("div");
+    l.className="line";
+    l.style.left=Math.random()*100+"%";
+    l.style.height=50+Math.random()*150+"px";
+    l.style.animationDuration=8+Math.random()*10+"s";
+    linesContainer.appendChild(l);
+}
+</script>
+
+</body>
+</html>
